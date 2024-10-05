@@ -232,7 +232,6 @@ public class EditPersonCommand extends Command {
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
-                    //&& Objects.equals(appointment, otherEditPersonDescriptor.appointment)
         }
 
         @Override
