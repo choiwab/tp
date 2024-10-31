@@ -10,3 +10,18 @@
 ---
 
 Given below are my contributions to the project.
+
+Role:
+- Developer
+- Storage
+- Code Quality
+
+Given below are my contributions to the project:
+- Refactoring of  `EditCommand` Command to support new command format
+- Creation of `EditAppointmentCommand` command
+- Adding storage classes associated with appointment
+- Create `clearAppointmentCommand` feature
+- Adding test cases for `clearAppointmentCommand` feature
+- Update UI (Labels, date formatting, minor bug fixes)
+- Overall code quality check 
+

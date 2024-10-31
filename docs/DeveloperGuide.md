@@ -250,7 +250,30 @@ The activity diagram shows the general sequence of steps when a user interacts w
 
 #### Implementation
 
+1. **Input Parsing**  
+   The user command input is parsed in `LogicManager` by calling `AddressBookParser#parseCommand`. For a command starting with "find person", the parser creates a `FindPersonCommandParser` instance to parse specific parameters.
+
+2. **Argument Tokenization**  
+   `FindPersonCommandParser#parse` uses `ArgumentTokenizer` to separate user input into arguments prefixed by indicators (e.g., `n/` for names). 
+
+3. **Predicate Creation**  
+   The `FindPersonCommandParser` checks if the `n/` prefix is present. If so, it creates a `NameContainsKeywordsPredicate` instance, containing a list of keywords derived from the user input, and passes it to `FindPersonCommand`.
+
+4. **Command Execution**  
+   Upon execution, `FindPersonCommand#execute` calls `Model#updateFilteredPersonList` to apply the predicate, filtering the list of persons based on keyword matches. The command then constructs a success message indicating the number of persons found.
+
+5. **Error Handling**
+    - If the required prefix (e.g., `n/`) is missing, the parser throws a `ParseException`.
+    - If an `IOException` or `AccessDeniedException` occurs during data storage, `LogicManager` handles these with an appropriate `CommandException`.
+   
 #### Design considerations
+
+### 1. Predicate Composition
+- **Reason**: Using predicates enables flexible filtering and reduces redundancy by allowing shared filtering logic across commands.
+
+### 2. Case-Insensitive Matching
+- **Reason**: User experience is enhanced by making searches case-insensitive.
+
 
 <br>
 
@@ -258,7 +281,22 @@ The activity diagram shows the general sequence of steps when a user interacts w
 
 #### Implementation
 
+1. **Input Parsing**  
+   The `list` command input is parsed in `LogicManager` through the `AddressBookParser#parseCommand` method. When the command starts with `list`, the parser invokes `ListCommandParser` to handle the specific arguments.
+
+2. **Entity Type Verification**  
+   `ListCommandParser#parse` trims the input to verify the entity type, checking for `PERSON_ENTITY_STRING` or `APPOINTMENT_ENTITY_STRING`.
+   If the entity type is `PERSON_ENTITY_STRING`, `ListCommandParser` returns an instance of `ListPersonCommand`.
+
+3. **Command Execution**  
+   When executed, `ListPersonCommand#execute` calls `Model#updateFilteredPersonList` with the predicate `PREDICATE_SHOW_ALL_PERSONS` to display all persons.
+
+4. After updating the list, the `ListPersonCommand` returns a success message indicating that all persons have been listed.
+
 #### Design considerations
+
+### 1. Abstracting Common List Logic
+- **Reason**: `ListCommand` is designed as an abstract class to handle shared listing logic for different entities (persons and appointments).
 
 <br>
 
@@ -266,7 +304,22 @@ The activity diagram shows the general sequence of steps when a user interacts w
 
 #### Implementation
 
+1. **Input Parsing**  
+   The `clear` command input is parsed in `LogicManager` by calling `AddressBookParser#parseCommand`. When the command starts with clear, the parser invokes `ClearCommandParser` to process specific arguments.
+
+2. **Entity Type Verification**  
+   `ClearCommandParser#parse` checks if the trimmed input matches `PERSON_ENTITY_STRING` or `APPOINTMENT_ENTITY_STRING`.
+   If the entity type is `PERSON_ENTITY_STRING`, `ClearCommandParser` returns an instance of `ClearPersonCommand`.
+
+3. **Command Execution**  
+   When executed, `ClearPersonCommand#execute` calls `Model#setAddressBook` with a new, empty AddressBook to clear all person entries.
+   After clearing, `ClearPersonCommand` returns a success message indicating the address book has been cleared.
+
 #### Design considerations
+
+### 1. Abstracting Clear Logic
+- **Reason**: The `ClearCommand` abstract class handles shared logic for clearing different entities (person or appointment).
+
 
 <br>
 
