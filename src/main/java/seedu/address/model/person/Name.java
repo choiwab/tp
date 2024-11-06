@@ -55,7 +55,6 @@ public class Name implements Comparable<Name> {
             return false;
         }
 
-
         return fullName.replaceAll("\\s+", "")
                 .equalsIgnoreCase(otherName.fullName.replaceAll("\\s+", ""));
 
